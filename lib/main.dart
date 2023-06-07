@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-
-
+import 'dart:convert';
 import 'package:http/http.dart' as http;
-
-
-
 import 'package:flutter/material.dart';
 
 void main() {
@@ -92,47 +87,157 @@ class DriversScreen extends StatelessWidget {
   }
 }
 
-class VehicleListScreen extends StatelessWidget {
+class VehicleListScreen extends StatefulWidget {
+
   @override
+  _WebServiceScreenState createState() => _WebServiceScreenState();
+}
+
+
+class _WebServiceScreenState extends State<VehicleListScreen> {
+  String _responseData = '';
+
+  Future<void> fetchData() async {
+    final response = await http.get(Uri.parse('http://localhost:3000/api/vehicles'));
+
+    if (response.statusCode == 200) {
+      print( response.body);
+      final data = jsonDecode(response.body);
+      setState(() {
+         _responseData = data['id'] + ',' + data['name']; 
+      });
+    } else {
+      setState(() {
+        _responseData = 'Error';
+      });
+    }
+  }
+
+    @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Vehicle List'),
+        title: Text('Web Service'),
       ),
       body: Center(
-        child: Text('Vehicle List Screen'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: fetchData,
+              child: Text('Fetch Data'),
+            ),
+            SizedBox(height: 20),
+            Text('Response Data: $_responseData'),
+          ],
+        ),
       ),
     );
   }
 }
 
-class LogCountScreen extends StatelessWidget {
-  @override
+
+
+
+class LogCountScreen extends StatefulWidget {
+
+ @override
+  _WebServiceLogCountScreenState createState() => _WebServiceLogCountScreenState();
+
+}
+
+
+class _WebServiceLogCountScreenState extends State<LogCountScreen> {
+  String _responseData = '';
+
+  Future<void> fetchData() async {
+    final response = await http.get(Uri.parse('http://localhost:3000/api/logcount'));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      setState(() {
+        _responseData = data['id'] + ',' + data['count'];
+      });
+    } else {
+      setState(() {
+        _responseData = 'Error';
+      });
+    }
+  }
+
+    @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Log Count'),
+        title: Text('Web Service'),
       ),
       body: Center(
-        child: Text('Log Count Screen'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: fetchData,
+              child: Text('Fetch Data'),
+            ),
+            SizedBox(height: 20),
+            Text('Response Data: $_responseData'),
+          ],
+        ),
       ),
     );
   }
 }
 
-class LastInfoScreen extends StatelessWidget {
+
+
+class LastInfoScreen extends StatefulWidget {
   @override
+  _WebServiceLastInfoScreenState createState() => _WebServiceLastInfoScreenState();
+}
+
+
+
+class _WebServiceLastInfoScreenState extends State<LastInfoScreen> {
+  String _responseData = '';
+
+  Future<void> fetchData() async {
+    final response = await http.get(Uri.parse('http://localhost:3000/api/logcount'));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      setState(() {
+        _responseData = data['id'] + ',' + data['time'] +  ',' + data['speed'] + ',' + data['direction'] + ',' + data['lat'] + ',' + data['lng'];
+      });
+    } else {
+      setState(() {
+        _responseData = 'Error';
+      });
+    }
+  }
+
+    @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Last Info'),
+        title: Text('Web Service'),
       ),
       body: Center(
-        child: Text('Last Info Screen'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: fetchData,
+              child: Text('Fetch Data'),
+            ),
+            SizedBox(height: 20),
+            Text('Response Data: $_responseData'),
+          ],
+        ),
       ),
     );
   }
 }
+
+
+
 
 class ShowAddressScreen extends StatelessWidget {
   @override
